@@ -1,4 +1,4 @@
 export const Environment = {
-  api_base_url: 'https://qa.amper-flow.com',
-  sync_url: 'https://sync-qa.amper-flow.com/',
-};
+  apiBaseUrl: 'https://qa.amper-flow.com',
+  syncUrl: 'https://sync-qa.amper-flow.com/',
+} as const;
