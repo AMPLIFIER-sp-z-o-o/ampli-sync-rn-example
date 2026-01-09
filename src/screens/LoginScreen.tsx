@@ -58,7 +58,7 @@ export const LoginScreen = ({ onLoggedIn }: Props) => {
       {isLoading ? (
         <ActivityIndicator />
       ) : (
-        <Button title="Zaloguj" onPress={onLogin} disabled={!email || !password} />
+        <Button title="Login" onPress={onLogin} disabled={!email || !password} />
       )}
     </View>
   );

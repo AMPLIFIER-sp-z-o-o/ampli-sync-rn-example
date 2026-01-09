@@ -46,11 +46,11 @@ const App = () => {
 
     (async () => {
       setIsSyncing(true);
-      setSyncInfo('Pobieranie bazy…');
+      setSyncInfo('Syncing database...');
       try {
         await initializeForSession(session);
         if (canceled) return;
-        if (!canceled) setSyncInfo('Baza: OK');
+        if (!canceled) setSyncInfo('Database: OK');
       } catch (e) {
         if (!canceled) {
           setSyncInfo(e instanceof Error ? e.message : String(e));
@@ -67,11 +67,11 @@ const App = () => {
 
   const handleAddTestAssetCategory = async () => {
     setIsSyncing(true);
-    setSyncInfo('Dodawanie assets_assetcategory…');
+    setSyncInfo('Adding assets_assetcategory…');
     try {
       const { id } = await addTestAssetCategoryRecord();
       setLastTestAssetCategoryId(id);
-      setSyncInfo(`Dodano assets_assetcategory: ${id}`);
+      setSyncInfo(`Added assets_assetcategory: ${id}`);
     } catch (e) {
       setSyncInfo(e instanceof Error ? e.message : String(e));
     } finally {
@@ -81,7 +81,7 @@ const App = () => {
 
   const handleDeleteLastTestAssetCategory = async () => {
     setIsSyncing(true);
-    setSyncInfo('Usuwanie ostatniej assets_assetcategory…');
+    setSyncInfo('Deleting last record from assets_assetcategory...');
     try {
       const deleted = await deleteLastTestAssetCategoryRecord(
         lastTestAssetCategoryId,
@@ -89,8 +89,8 @@ const App = () => {
       setLastTestAssetCategoryId(null);
       setSyncInfo(
         deleted
-          ? `Usunięto assets_assetcategory: ${deleted.id}`
-          : 'Brak rekordu testowego do usunięcia',
+          ? `Deleted assets_assetcategory: ${deleted.id}`
+          : 'No records...',
       );
     } catch (e) {
       setSyncInfo(e instanceof Error ? e.message : String(e));
@@ -104,10 +104,10 @@ const App = () => {
     if (!currentSession) return;
 
     setIsSyncing(true);
-    setSyncInfo('Wysyłanie…');
+    setSyncInfo('Sending...');
     try {
       await syncSend(currentSession);
-      setSyncInfo('Wysyłanie: OK');
+      setSyncInfo('Sending: DONE');
     } catch (e) {
       setSyncInfo(e instanceof Error ? e.message : String(e));
     } finally {
@@ -120,12 +120,12 @@ const App = () => {
     if (!currentSession) return;
 
     setIsSyncing(true);
-    setSyncInfo('Pobieranie…');
+    setSyncInfo('Syncing...');
     try {
       await syncPull(currentSession, progress => {
-        setSyncInfo(`Pobieranie: ${Math.ceil(progress * 100)}%`);
+        setSyncInfo(`Syncing: ${Math.ceil(progress * 100)}%`);
       });
-      setSyncInfo('Pobieranie: OK');
+      setSyncInfo('Syncing: DONE');
     } catch (e) {
       setSyncInfo(e instanceof Error ? e.message : String(e));
     } finally {

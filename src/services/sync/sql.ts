@@ -31,7 +31,9 @@ const convertDateTimeToUTCDateString = (value: unknown): string =>
 const convertDateTimeToUTCTimeString = (value: unknown): string =>
   new Date(value as any).toISOString().slice(11, 19);
 
-export const sendChangesQuery = async (params: SyncParams): Promise<void> => {
+export const sendChangesQuery = async (
+  params: SyncParams
+): Promise<void> => {
   const { request, recordsUpdated, recordsDeleted } =
     await buildPushJsonRequestFromDb(dbAll);
 
@@ -39,6 +41,7 @@ export const sendChangesQuery = async (params: SyncParams): Promise<void> => {
     syncUrl: params.syncUrl,
     accessToken: params.accessToken,
     data: request,
+    deviceUniqueId: params.deviceUniqueId,
   });
 
   await clearUpdateMarker(recordsUpdated);
@@ -150,7 +153,6 @@ const pullAndApplyRemoteChangesOnce = async (params: TableSyncParams) => {
 
   const row = data[0];
   maxPackageSize = Number(row.MaxPackageSize) || 0;
-
   if (row.SyncId <= 0) {
     return { maxPackageSize, recordCount, error };
   }
@@ -177,8 +179,8 @@ const pullAndApplyRemoteChangesOnce = async (params: TableSyncParams) => {
   });
 
   try {
+    console.log(batchQueries);
     if (batchQueries.length > 0) await dbBatch(batchQueries);
-
     await commitSyncAPI({
       syncUrl: params.syncUrl,
       syncId: row.SyncId,

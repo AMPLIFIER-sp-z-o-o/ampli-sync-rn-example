@@ -25,24 +25,24 @@ export const MainScreen = ({
 }: Props) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Zalogowano</Text>
+      <Text style={styles.title}>AMPLI-SYNC Example</Text>
       <Text style={styles.meta}>login: {session.login}</Text>
       {syncInfo ? <Text style={styles.meta}>{syncInfo}</Text> : null}
 
       <View style={styles.buttons}>
         <Button
-          title="Dodaj assets_assetcategory"
+          title="Add assets_assetcategory"
           onPress={onAddTestAssetCategory}
           disabled={isSyncing}
         />
         <Button
-          title="Usuń ostatni dodany rekord assets_assetcategory"
+          title="Delete last record from assets_assetcategory"
           onPress={onDeleteLastTestAssetCategory}
           disabled={isSyncing}
         />
-        <Button title="Wyślij dane" onPress={onSend} disabled={isSyncing} />
-        <Button title="Pobierz dane" onPress={onPull} disabled={isSyncing} />
-        <Button title="Wyloguj" onPress={onLogout} />
+        <Button title="Sent data to server" onPress={onSend} disabled={isSyncing} />
+        <Button title="Get changes from server" onPress={onPull} disabled={isSyncing} />
+        <Button title="Logout" onPress={onLogout} />
       </View>
     </View>
   );

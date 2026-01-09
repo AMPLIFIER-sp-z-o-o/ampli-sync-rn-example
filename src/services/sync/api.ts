@@ -15,7 +15,7 @@ import { unzip } from 'react-native-zip-archive';
 import { type JsonRecords } from './formats/json';
 import type { PushJsonRequest } from './formats/pushTypes';
 
-const AMPLI_SYNC_BASE_PATH = 'app/ampli-sync';
+const AMPLI_SYNC_BASE_PATH = '';
 
 const toBaseUrl = (url: string): string =>
   url.endsWith('/') ? url : `${url}/`;
@@ -76,6 +76,7 @@ export const prepopulateDbIfMissing = async (params: {
 
   const sourcePath = `${platformDatabasePath}/database.zip`;
   const databasePath = `${platformDatabasePath}/${databaseName}.db`;
+  console.log(syncUrl);
 
   const fromUrl = ampliSyncUrl(syncUrl, `prepopulate-db/${deviceUniqueId}`);
 
@@ -121,10 +122,11 @@ export const pushChangesAPI = async (params: {
   syncUrl: string;
   accessToken: string;
   data: PushJsonRequest;
+  deviceUniqueId: string;
 }): Promise<void> => {
-  const { syncUrl, accessToken, data } = params;
-  const url = ampliSyncUrl(syncUrl, 'receive-changes');
-
+  const { syncUrl, accessToken, data, deviceUniqueId } = params;
+  const url = ampliSyncUrl(syncUrl, `receive-changes/${deviceUniqueId}`);
+  console.log(data);
   const response = await fetch(url, {
     method: 'POST',
     headers: { ...authHeader(accessToken), 'Content-Type': 'application/json' },
@@ -186,7 +188,8 @@ export const pullChangesForTableAPI = async (params: {
     syncUrl,
     `sync-compressed/${tableName}/${deviceUniqueId}`,
   );
-
+  console.log(url);
+  console.log(accessToken);
   const response = await fetch(url, { headers: authHeader(accessToken) });
 
   assertOk(response, 'pullChangesForTableAPI');
@@ -203,7 +206,7 @@ export const pullChangesForTableAPI = async (params: {
   const parsed = JSON.parse(
     new Decoder().decode(inflate),
   ) as PullChangesResponse;
-
+  console.log(parsed);
   return parsed;
 };
 
@@ -214,7 +217,6 @@ export const commitSyncAPI = async (params: {
 }) => {
   const { syncUrl, accessToken, syncId } = params;
   const url = ampliSyncUrl(syncUrl, `commit-sync/${syncId}`);
-
   const response = await fetch(url, { headers: authHeader(accessToken) });
 
   assertOk(response, 'commitSyncAPI');
