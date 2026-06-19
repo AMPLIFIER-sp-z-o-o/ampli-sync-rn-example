@@ -1,97 +1,115 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# AMPLI-SYNC React Native Example
 
-# Getting Started
+Example React Native client for [AMPLI-SYNC](https://github.com/AMPLIFIER-sp-z-o-o/ampli-sync).
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+This application demonstrates how a mobile client can use a local SQLite database and synchronize changes with the AMPLI-SYNC backend. 
 
-## Step 1: Start Metro
+The application code is intended to be portable between Android and iOS. The local setup described below uses the Android emulator.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Features
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+The example client can:
+
+- download a prepopulated SQLite database from the backend,
+- work with the downloaded database locally on the device,
+- create, update and delete demo customer records,
+- push local changes to the backend,
+- pull changes from the backend.
+
+## Requirements
+
+For the tested local Android setup:
+
+- local AMPLI-SYNC backend running from [AMPLI-SYNC](https://github.com/AMPLIFIER-sp-z-o-o/ampli-sync)
+- Node.js 20+
+- npm
+- Android emulator
+- Android SDK platform-tools (`adb`)
+
+## Running the app
+
+### Backend
+
+Start the local backend from the [AMPLI-SYNC](https://github.com/AMPLIFIER-sp-z-o-o/ampli-sync) repository.
+
+For the tested Android emulator setup, this app is configured in `environment.ts` to use:
+
+```text
+  http://10.0.2.2:8080/ampli-sync/
+```
+`10.0.2.2` is the Android emulator address for the host machine.
+
+If you run the app on a physical device or use a different backend host, update `environment.ts`.
+
+### Install dependencies
 
 ```sh
-# Using npm
+npm install
+```
+
+### Run locally on Android emulator
+
+Start an Android emulator.
+
+In the first terminal, start Metro:
+
+```sh
 npm start
-
-# OR using Yarn
-yarn start
 ```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
+In the second terminal, make sure `adb` is available. For example:
 
 ```sh
-# Using npm
+export PATH="$HOME/Android/Sdk/platform-tools:$PATH"
+adb devices
+```
+The emulator should be listed as a connected device.
+
+Then run the app:
+
+```sh
+adb reverse tcp:8081 tcp:8081
 npm run android
-
-# OR using Yarn
-yarn android
 ```
+### Local login
 
-### iOS
+In the demo setup, credentials are not validated.
+Any login and password can be used. 
+## Demo flow
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+After logging in:
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+1. Click `Add demo customer` to insert a customer into local SQLite.
+2. Click `Update demo customer` to update the last local demo customer.
+3. Click `Delete demo customer` to delete the last local demo customer.
+4. Click `Sent data to server` to push local SQLite changes to the backend.
+5. Click `Get changes from server` to pull changes from the backend.
+
+To verify that pushed data reached PostgreSQL, run:
+
+```sql
+select id, name, email, city, created_at, rowid
+from tenant_test.demo_customers
+where email like 'customer-from-app-%'
+```
+## iOS
+
+The current local demo instructions focus on the Android emulator setup. For iOS, the backend URL may need to be adjusted.
+
+## Troubleshooting
+
+### `adb: not found`
+
+Add Android platform-tools to your `PATH`:
 
 ```sh
-bundle install
+export PATH="$HOME/Android/Sdk/platform-tools:$PATH"
 ```
 
-Then, and every time you update your native dependencies, run:
+### If the app starts, but cannot connect to the React server, run:
 
-```sh
-bundle exec pod install
+ ```sh
+  adb reverse tcp:8081 tcp:8081
 ```
+  This forwards port 8081 from the Android emulator to the host machine, where Metro is running.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
 
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
