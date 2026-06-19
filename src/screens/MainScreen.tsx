@@ -4,8 +4,9 @@ import type { Session } from '../auth/types';
 
 type Props = {
   session: Session;
-  onAddTestAssetCategory: () => void;
-  onDeleteLastTestAssetCategory: () => void;
+  onAddDemoCustomer: () => void;
+  onUpdateDemoCustomer: () => void;
+  onDeleteDemoCustomer: () => void;
   onSend: () => void;
   onPull: () => void;
   onLogout: () => void;
@@ -15,8 +16,9 @@ type Props = {
 
 export const MainScreen = ({
   session,
-  onAddTestAssetCategory,
-  onDeleteLastTestAssetCategory,
+  onAddDemoCustomer,
+  onUpdateDemoCustomer,
+  onDeleteDemoCustomer,
   onSend,
   onPull,
   onLogout,
@@ -31,17 +33,30 @@ export const MainScreen = ({
 
       <View style={styles.buttons}>
         <Button
-          title="Add assets_assetcategory"
-          onPress={onAddTestAssetCategory}
+          title="Add demo customer"
+          onPress={onAddDemoCustomer}
           disabled={isSyncing}
         />
         <Button
-          title="Delete last record from assets_assetcategory"
-          onPress={onDeleteLastTestAssetCategory}
+          title="Update demo customer"
+          onPress={onUpdateDemoCustomer}
           disabled={isSyncing}
         />
-        <Button title="Sent data to server" onPress={onSend} disabled={isSyncing} />
-        <Button title="Get changes from server" onPress={onPull} disabled={isSyncing} />
+        <Button
+          title="Delete demo customer"
+          onPress={onDeleteDemoCustomer}
+          disabled={isSyncing}
+        />
+        <Button
+          title="Sent data to server"
+          onPress={onSend}
+          disabled={isSyncing}
+        />
+        <Button
+          title="Get changes from server"
+          onPress={onPull}
+          disabled={isSyncing}
+        />
         <Button title="Logout" onPress={onLogout} />
       </View>
     </View>
