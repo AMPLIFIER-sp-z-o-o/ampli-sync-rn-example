@@ -1,40 +1,12 @@
-import { jwtDecode } from 'jwt-decode';
-
 import { Environment } from '../../environment';
 import type { Session } from './types';
 
-type SignInResponse = {
-  access: string;
-};
+const DEV_ACCESS_TOKEN = 'dev-local-token';
 
-type AccessTokenDecoded = {
-  user_id?: string | number;
-};
-
-export const signIn = async (email: string, password: string): Promise<Session> => {
-  const response = await fetch(`${Environment.apiBaseUrl}/api/token/`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      username: email,
-      password,
-    }),
-  });
-
-  if (!response.ok) {
-    throw new Error(`Login failed: ${response.status}`);
-  }
-
-  const token = (await response.json()) as SignInResponse;
-  const decoded = jwtDecode<AccessTokenDecoded>(token.access);
-  const userId = decoded.user_id;
-  if (userId == null || (typeof userId !== 'string' && typeof userId !== 'number')) {
-    throw new Error('Access token missing user_id');
-  }
-
+export const signIn = async (): Promise<Session> => {
   return {
-    login: String(userId),
-    accessToken: token.access,
+    login: '1',
+    accessToken: DEV_ACCESS_TOKEN,
     syncUrl: Environment.syncUrl,
   };
 };
