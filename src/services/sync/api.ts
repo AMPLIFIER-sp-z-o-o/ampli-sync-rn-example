@@ -147,6 +147,10 @@ export const migrationsAPI = async (params: {
 
   const response = await fetch(url, { headers: authHeader(accessToken) });
 
+  if (response.status === 404) {
+    return [];
+  }
+
   assertOk(response, 'migrationsAPI');
 
   const data = (await response.json()) as MigrationRow[];
